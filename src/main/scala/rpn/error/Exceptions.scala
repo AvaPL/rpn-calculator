@@ -1,4 +1,4 @@
-package rpn
+package rpn.error
 
 private[rpn] def notEnoughElements: Nothing =
   throw new UnsupportedOperationException(

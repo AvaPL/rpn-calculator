@@ -1,41 +1,36 @@
 package rpn
 
+import rpn.Rpn.empty
+import rpn.error.*
+import rpn.operations.Plus
+
+import scala.annotation.tailrec
 import scala.collection.immutable.{AbstractSeq, LinearSeq}
 import scala.math
 
-sealed trait Rpn[+T: Numeric]:
-  def + : Rpn[T]
+sealed trait Rpn[+T]
 
-case class EmptyStack[+T: Numeric]() extends Rpn[T]:
-  override def + : Rpn[T] = notEnoughElements
+case object Empty extends Rpn[Nothing]
 
-case class Stack[+T](top: T, rest: Rpn[T])(using numeric: Numeric[T])
-    extends Rpn[T]:
-  import numeric.*
+case class Stack[+T](top: T, rest: Rpn[T] = Empty) extends Rpn[T]
 
-  override def + : Rpn[T] =
-    rest match {
-      case Stack(top, rest) => Stack(this.top + top, rest)
-      case EmptyStack()     => notEnoughElements
-    }
-
-object Stack {
-  def apply[T: Numeric](top: T): Stack[T] = Stack(top, EmptyStack())
-}
+object Stack:
+  def apply[T](top: T, rest: T*): Stack[T] =
+    Stack(top, Rpn(rest*))
 
 object Rpn:
-  def apply[T: Numeric](elements: T*): Rpn[T] =
+  def apply[T](elements: T*): Rpn[T] =
     elements.foldRight(empty)((top, rest) => Stack(top, rest))
 
-  def empty[T: Numeric]: Rpn[T] = EmptyStack()
+  def empty[T]: Rpn[T] = Empty
 
   object ops:
-    given [T: Numeric]: Conversion[T, Rpn[T]] with
-      override def apply(top: T): Rpn[T] = Stack(top)
+    given [T]: Conversion[T, Rpn[T]] =
+      top => Stack(top)
 
-    given [T: Numeric]: Conversion[Rpn[T], T] with
-      override def apply(rpn: Rpn[T]): T =
-        rpn match {
-          case Stack(top, _) => top
-          case EmptyStack()  => emptyStackEvaluation
-        }
+    given [T]: Conversion[Rpn[T], T] =
+      case Stack(top, _) => top
+      case Empty         => emptyStackEvaluation
+
+    extension [T: Numeric](rpn: Rpn[T])
+      def + : Rpn[T] = summon[Plus[Rpn[T]]](rpn)
