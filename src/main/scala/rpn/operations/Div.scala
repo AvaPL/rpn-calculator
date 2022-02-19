@@ -17,9 +17,9 @@ object Div:
     extension [T: Fractional](rpn: Rpn[T]) def / : Rpn[T] = rpnFractional(rpn)
 
   object integral:
-    given rpnIntegral[T](using fractional: Integral[T]): Div[Rpn[T]] =
+    given rpnIntegral[T](using integral: Integral[T]): Div[Rpn[T]] =
       case Stack(top1, Stack(top2, rest)) =>
-        Stack(fractional.quot(top1, top2), rest)
+        Stack(integral.quot(top1, top2), rest)
       case _ => notEnoughElements
 
     extension [T: Integral](rpn: Rpn[T]) def / : Rpn[T] = rpnIntegral(rpn)
