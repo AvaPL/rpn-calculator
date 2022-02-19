@@ -2,7 +2,7 @@ package rpn
 
 import rpn.Rpn.empty
 import rpn.error.*
-import rpn.operations.Plus
+import rpn.operations.{Add, Sub}
 
 import scala.annotation.tailrec
 import scala.collection.immutable.{AbstractSeq, LinearSeq}
@@ -31,6 +31,3 @@ object Rpn:
     given [T]: Conversion[Rpn[T], T] =
       case Stack(top, _) => top
       case Empty         => emptyStackEvaluation
-
-    extension [T: Numeric](rpn: Rpn[T])
-      def + : Rpn[T] = summon[Plus[Rpn[T]]](rpn)

@@ -6,15 +6,15 @@ import rpn.{Rpn, Stack}
 
 import scala.language.postfixOps
 
-class PlusTest extends AnyWordSpec with Matchers:
-  "+" when {
-    import Rpn.ops._
+class MulTest extends AnyWordSpec with Matchers:
+  "*" when {
+    import Mul._
 
     "given EmptyStack" should {
       "throw UnsupportedOperationException" in {
         val rpn = Rpn.empty[Int]
 
-        an[UnsupportedOperationException] shouldBe thrownBy(rpn +)
+        an[UnsupportedOperationException] shouldBe thrownBy(rpn.*)
       }
     }
 
@@ -22,27 +22,27 @@ class PlusTest extends AnyWordSpec with Matchers:
       "throw UnsupportedOperationException" in {
         val rpn = Stack(1)
 
-        an[UnsupportedOperationException] shouldBe thrownBy(rpn +)
+        an[UnsupportedOperationException] shouldBe thrownBy(rpn.*)
       }
     }
 
     "given a stack with two elements" should {
-      "sum top two elements" in {
-        val rpn = Rpn(1, 3)
+      "multiply top two elements" in {
+        val rpn = Rpn(7, 5)
 
-        val plusResult = rpn +
+        val mulResult = rpn *
 
-        plusResult should be(Rpn(4))
+        mulResult should be(Rpn(35))
       }
     }
 
     "given a stack with more than two elements" should {
-      "sum top two elements" in {
-        val rpn = Rpn(1, 3, 5, 7)
+      "multiply top two elements" in {
+        val rpn = Rpn(7, 5, 3, 1)
 
-        val plusResult = rpn +
+        val mulResult = rpn *
 
-        plusResult should be(Rpn(4, 5, 7))
+        mulResult should be(Rpn(35, 3, 1))
       }
     }
   }
