@@ -8,7 +8,7 @@ import scala.language.postfixOps
 
 class DivTest extends AnyWordSpec with Matchers:
   "integral /" when {
-    import Div.integral._
+    import Div._
 
     "given EmptyStack" should {
       "throw UnsupportedOperationException" in {
@@ -56,7 +56,7 @@ class DivTest extends AnyWordSpec with Matchers:
   }
 
   "fractional /" when {
-    import Div.fractional._
+    import Div._
 
     "given EmptyStack" should {
       "throw UnsupportedOperationException" in {

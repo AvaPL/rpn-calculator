@@ -7,19 +7,16 @@ private[rpn] trait Div[T]:
   def apply(t: T): T
 
 object Div:
-  object fractional:
-    given rpnFractional[T](using fractional: Fractional[T]): Div[Rpn[T]] = {
-      case Stack(top1, Stack(top2, rest)) =>
-        Stack(fractional.div(top1, top2), rest)
-      case _ => notEnoughElements
-    }
+  private type FI[T] = Fractional[T] | Integral[T]
 
-    extension [T: Fractional](rpn: Rpn[T]) def / : Rpn[T] = rpnFractional(rpn)
+  given rpnInstance[T](using fi: FI[T]): Div[Rpn[T]] = {
+    case Stack(top1, Stack(top2, rest)) =>
+      val result = fi match {
+        case f: Fractional[T] => f.div(top1, top2)
+        case i: Integral[T]   => i.quot(top1, top2)
+      }
+      Stack(result, rest)
+    case _ => notEnoughElements
+  }
 
-  object integral:
-    given rpnIntegral[T](using integral: Integral[T]): Div[Rpn[T]] =
-      case Stack(top1, Stack(top2, rest)) =>
-        Stack(integral.quot(top1, top2), rest)
-      case _ => notEnoughElements
-
-    extension [T: Integral](rpn: Rpn[T]) def / : Rpn[T] = rpnIntegral(rpn)
+  extension [T: FI](rpn: Rpn[T]) def / : Rpn[T] = rpnInstance(rpn)
