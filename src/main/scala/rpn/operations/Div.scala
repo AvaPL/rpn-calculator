@@ -12,8 +12,8 @@ object Div:
   given rpnInstance[T](using fi: FI[T]): Div[Rpn[T]] = {
     case Stack(top1, Stack(top2, rest)) =>
       val result = fi match {
-        case f: Fractional[T] => f.div(top1, top2)
-        case i: Integral[T]   => i.quot(top1, top2)
+        case f: Fractional[T] => f.div(top2, top1)
+        case i: Integral[T]   => i.quot(top2, top1)
       }
       Stack(result, rest)
     case _ => notEnoughElements

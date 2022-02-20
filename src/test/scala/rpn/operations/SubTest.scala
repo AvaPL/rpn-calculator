@@ -8,7 +8,7 @@ import scala.language.postfixOps
 
 class SubTest extends AnyWordSpec with Matchers:
   "-" when {
-    import Sub._
+    import Rpn.ops.{*, given}
 
     "given EmptyStack" should {
       "throw UnsupportedOperationException" in {
@@ -30,21 +30,30 @@ class SubTest extends AnyWordSpec with Matchers:
 
     "given a stack with two elements" should {
       "diff top two elements" in {
-        val rpn = Rpn(1, 3)
+        val rpn = <>.~(1).~(3)
 
-        val minusResult = rpn -
+        val minusResult: Int = rpn -
 
-        minusResult should be(Rpn(-2))
+        minusResult should be(-2)
       }
     }
 
     "given a stack with more than two elements" should {
       "diff top two elements" in {
-        val rpn = Rpn(1, 3, 5, 7)
+        val rpn = <>.~(1).~(3).~(5).~(7)
 
         val minusResult = rpn -
 
-        minusResult should be(Rpn(-2, 5, 7))
+        minusResult should be(<>.~(1).~(3).~(-2))
+      }
+
+      "diff elements in correct order" in {
+        // 1 - (3 - 5)
+        val rpn = <>.~(1).~(3).~(5)
+
+        val minusResult: Int = rpn.-.-
+
+        minusResult should be(3)
       }
     }
   }

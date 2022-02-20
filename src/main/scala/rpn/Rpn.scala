@@ -2,7 +2,7 @@ package rpn
 
 import rpn.Rpn.empty
 import rpn.error.*
-import rpn.operations.{Add, Sub}
+import rpn.operations.*
 
 import scala.annotation.tailrec
 import scala.collection.immutable.{AbstractSeq, LinearSeq}
@@ -25,9 +25,19 @@ object Rpn:
   def empty[T]: Rpn[T] = Empty
 
   object ops:
+    export Add._
+    export Div._
+    export Mul._
+    export Rem._
+    export Sub._
+
     given [T]: Conversion[T, Rpn[T]] =
       top => Stack(top)
 
     given [T]: Conversion[Rpn[T], T] =
       case Stack(top, _) => top
       case Empty         => emptyStackEvaluation
+
+    def <>[T]: Rpn[T] = empty
+
+    extension [T](rpn: Rpn[T]) def ~[U >: T](top: U): Rpn[U] = Stack(top, rpn)

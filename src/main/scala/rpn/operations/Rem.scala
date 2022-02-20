@@ -9,7 +9,7 @@ private[rpn] trait Rem[T]:
 object Rem:
   given rpnInstance[T](using integral: Integral[T]): Rem[Rpn[T]] = {
     case Stack(top1, Stack(top2, rest)) =>
-      Stack(integral.rem(top1, top2), rest)
+      Stack(integral.rem(top2, top1), rest)
     case _ => notEnoughElements
   }
 

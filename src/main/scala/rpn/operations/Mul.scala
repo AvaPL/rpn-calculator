@@ -9,7 +9,7 @@ private[rpn] trait Mul[T]:
 object Mul:
   given rpnInstance[T](using numeric: Numeric[T]): Mul[Rpn[T]] =
     case Stack(top1, Stack(top2, rest)) =>
-      Stack(numeric.times(top1, top2), rest)
+      Stack(numeric.times(top2, top1), rest)
     case _ => notEnoughElements
 
   extension [T: Numeric](rpn: Rpn[T]) def * : Rpn[T] = rpnInstance(rpn)

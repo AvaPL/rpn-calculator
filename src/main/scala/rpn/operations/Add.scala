@@ -9,7 +9,7 @@ private[rpn] trait Add[T]:
 object Add:
   given rpnInstance[T](using numeric: Numeric[T]): Add[Rpn[T]] =
     case Stack(top1, Stack(top2, rest)) =>
-      Stack(numeric.plus(top1, top2), rest)
+      Stack(numeric.plus(top2, top1), rest)
     case _ => notEnoughElements
 
   extension [T: Numeric](rpn: Rpn[T]) def + : Rpn[T] = rpnInstance(rpn)

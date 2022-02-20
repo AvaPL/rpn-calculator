@@ -76,3 +76,35 @@ class RpnTest extends AnyWordSpec with Matchers:
       }
     }
   }
+
+  "<> and ~" when {
+    import Rpn.ops._
+
+    "used on three Ints" should {
+      "return correct stack" in {
+        val stack = <> ~ 1 ~ 2 ~ 3
+
+        stack should be(Rpn(3, 2, 1))
+      }
+    }
+  }
+
+  "chain of operations" should {
+    import Rpn.ops.{*, given}
+
+    "return valid result" when {
+      "used on integers" in {
+        lazy val result: Int =
+          <>.~(1).~(2).~(3).+.-.~(3)./.~(10).*.~(3).%.-
+
+        result should be(1)
+      }
+
+      "used on doubles" in {
+        lazy val result: Double =
+          <>.~(1.0).~(2.0).~(3.0).+.-.~(3.0)./.~(9.0).*.-
+
+        result should be(12)
+      }
+    }
+  }
